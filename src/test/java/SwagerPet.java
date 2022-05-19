@@ -1,13 +1,10 @@
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
 import java.util.Random;
-
-import static io.restassured.RestAssured.given;
 
 public class SwagerPet extends AbstractClass {
     List petId;
@@ -17,12 +14,9 @@ public class SwagerPet extends AbstractClass {
     @BeforeMethod
     public void before() {
         RestAssured.baseURI = "https://petstore.swagger.io/v2";
-        response = given().
-                contentType(ContentType.JSON).
-                get("/pet/findByStatus?status=sold");
-
+        simpleGet("/pet/findByStatus?status=sold");
         statusCode(200);
-        petId = response.jsonPath().getList("id");
+        petId = listToValue("id");
         index = random.nextInt(petId.size());
         System.out.println("id:\t" + petId.get(index));
     }
