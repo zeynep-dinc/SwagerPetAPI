@@ -11,7 +11,8 @@ import static io.restassured.RestAssured.given;
 
 public class SwagerPet extends AbstractClass {
     List petId;
-    int index=0;
+    int index = 0;
+    Random random = new Random();
 
     @BeforeMethod
     public void before() {
@@ -22,57 +23,39 @@ public class SwagerPet extends AbstractClass {
 
         statusCode(200);
         petId = response.jsonPath().getList("id");
-
-        Random random = new Random();
-
         index = random.nextInt(petId.size());
         System.out.println("id:\t" + petId.get(index));
     }
 
-    @Test
-    public void putFonk() {
-        String data = "{\"status\": \"sold\"}";
-
-        response = given().
-                contentType(ContentType.JSON).
-                body(data).
-                when().
-                put("/pet");
-
-
-        controlToValue("status","available");
-    }
-
-    @Test
+    @Test(priority = 1)
     public void getFonk() {
-        response = given()
-                .contentType(ContentType.JSON)
-                .get("/pet/" + petId.get(index));
+        simpleGet("/pet/" + petId.get(index));
     }
 
-    @Test
+    @Test(priority = 2)
     public void postFonk() {
-
         String data = "{" +
                 "\"petId\":" + petId.get(index) +
                 "}";
 
         System.out.println(data);
-
-        response = given()
-                .post("/pet/" + petId.get(index));
+        simplePost("/pet/" + petId.get(index));
     }
 
-    @Test
-    public void deleteFonk() {
+    @Test(priority = 3)
+    public void putFonk() {
+        String data = "{\"status\": \"available\"}";
+        simplePut("/pet");
+        controlToValue("status", "available");
+    }
 
-        response = given()
-                .contentType(ContentType.JSON)
-                .delete("/pet/" + petId.get(index));
+    @Test(priority = 4)
+    public void deleteFonk() {
+        simpleDelete("/pet/" + petId.get(index));
     }
 
     @AfterMethod
-    public void after(){
+    public void after() {
         statusCode(200);
         writeResult();
     }
