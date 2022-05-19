@@ -9,6 +9,7 @@ import java.util.Random;
 public class SwagerPet extends AbstractClass {
     List petId;
     int index = 0;
+    String status="sold";
     Random random = new Random();
 
     @BeforeMethod
@@ -21,29 +22,76 @@ public class SwagerPet extends AbstractClass {
         System.out.println("id:\t" + petId.get(index));
     }
 
-    @Test(priority = 1)
+    @Test
     public void getFonk() {
         simpleGet("/pet/" + petId.get(index));
     }
 
-    @Test(priority = 2)
-    public void postFonk() {
+    @Test
+    public void getToWithStatus(){
+        simpleGet("/pet/findByStatus?status="+status);
+    }
+
+    @Test
+    public void postFonksiyonBodyFull(){
+        String data="{\n" +
+                "  \"id\": 2,\n" +
+                "  \"category\": {\n" +
+                "    \"id\": 1,\n" +
+                "    \"name\": \"string\"\n" +
+                "  },\n" +
+                "  \"name\": \"doggie\",\n" +
+                "  \"photoUrls\": [\n" +
+                "    \"string\"\n" +
+                "  ],\n" +
+                "  \"tags\": [\n" +
+                "    {\n" +
+                "      \"id\": 0,\n" +
+                "      \"name\": \"itoğlu\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"status\": \"available\"\n" +
+                "}";
+
+        simplePost("/pet",data);
+    }
+
+    @Test
+    public void petIdStatusPostMethod() {
         String data = "{" +
-                "\"petId\":" + petId.get(index) +
+                "\"petId\":"+petId.get(index).toString()+
+                "\"status\":\"sold\""+
                 "}";
 
         System.out.println(data);
-        simplePost("/pet/" + petId.get(index));
+        postWithFormParam("/pet/" + petId.get(index).toString(),data);
     }
 
-    @Test(priority = 3)
+    @Test
     public void putFonk() {
-        String data = "{\"status\": \"available\"}";
-        simplePut("/pet");
+        String data = "{\n" +
+                "  \"id\": 0,\n" +
+                "  \"category\": {\n" +
+                "    \"id\": 0,\n" +
+                "    \"name\": \"string\"\n" +
+                "  },\n" +
+                "  \"name\": \"doggie\",\n" +
+                "  \"photoUrls\": [\n" +
+                "    \"string\"\n" +
+                "  ],\n" +
+                "  \"tags\": [\n" +
+                "    {\n" +
+                "      \"id\": 0,\n" +
+                "      \"name\": \"string\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"status\": \"available\"\n" +
+                "}";
+        simplePut("/pet",data);
         controlToValue("status", "available");
     }
 
-    @Test(priority = 4)
+    @Test
     public void deleteFonk() {
         simpleDelete("/pet/" + petId.get(index));
     }

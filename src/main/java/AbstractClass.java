@@ -67,6 +67,13 @@ public abstract class AbstractClass {
         return response;
     }
 
+    public Response postWithFormParam(String url,String formData){
+        response=given()
+                .formParam(formData)
+                .post(url);
+        return response;
+    }
+
     public Response simplePut(String url, String bodyData) {
         response = given()
                 .contentType(ContentType.JSON)
